@@ -1,0 +1,66 @@
+{
+ "gender":[
+
+"women",
+"maternity",
+"men",
+"girls",
+"boys"
+
+ ],
+ "pattern":[
+"Geo",
+"Birdseye",
+"Mixed",
+"mini-stripe",
+"thread",
+"Fair Isle ",
+"allover Southwestern",
+"mixed stitch",
+"Allover",
+"open geometric eyelet",
+"allover horse wreath",
+"Allover geometric stripe",
+"allover intarsia",
+"striped"
+ ],
+ 
+ "brand":[
+	"gap",
+	"gap",
+	"oldnavy",
+	"banana republic",
+	"athleta"
+ ],
+ 
+ "color":[
+"black",
+"heather gray",
+"flint grey",
+"blue",
+"white",
+"fire coral",
+"cucumber peel",
+"willow pink",
+"light heather gray",
+"black herringbone",
+"sloe gin",
+"blue plaid",
+"true indigo",
+"watercolor floral",
+"pink pleasure",
+"blue multi",
+"sparkle heather gray",
+"oatmeal heather",
+"red plaid",
+"green plaid",
+"white stripe",
+"clean coal",
+"blue stripe",
+"grey heather",
+"charcoal gray",
+"true black",
+"blue bird",
+"APPLE OF MY EYE"
+ ]
+}
