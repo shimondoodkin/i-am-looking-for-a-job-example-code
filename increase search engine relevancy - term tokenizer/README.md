@@ -1,14 +1,16 @@
 #Increase search engine relevancy - term tokenizer
 
-## sytem overview
+http://doodkin.com/dev/i-am-looking-for-a-job-example-code/increase%20search%20engine%20relevancy%20-%20term%20tokenizer/tokenizer-api-test.html
 
- # a 3d parity image recognition service converts an image to text description.
- # the resulting image description searched in fashion websites by selecting search categories and filling the query text.
- # the result is product images similar to picture shown by app user
+## Sytem overview
+
+1. A 3d parity image recognition service converts an image to text description.
+2. The resulting image description searched in fashion websites by selecting search categories and filling the query text.
+3. The result is product images similar to picture shown by app user
 
 #Requirements: 
  
-## this class
+## This class
 
  * The class is intended to increase search engine relevancy. for converting text requests into products.
  * The class should be easily customizable (external config file)
@@ -18,4 +20,4 @@
  
 # Excercize Result:
 
- * Very Good!
+ * client: Very Good!
