@@ -1,7 +1,5 @@
 #Increase search engine relevancy - term tokenizer
 
-http://doodkin.com/dev/i-am-looking-for-a-job-example-code/increase%20search%20engine%20relevancy%20-%20term%20tokenizer/tokenizer-api-test.html
-
 ## Sytem overview
 
 1. A 3d parity image recognition service converts an image to text description.
@@ -20,4 +18,6 @@ http://doodkin.com/dev/i-am-looking-for-a-job-example-code/increase%20search%20e
  
 # Excercize Result:
 
- * client: Very Good!
+ * test online: 
+http://doodkin.com/dev/i-am-looking-for-a-job-example-code/increase%20search%20engine%20relevancy%20-%20term%20tokenizer/tokenizer-api-test.html
+ * Client says: Very Good!
