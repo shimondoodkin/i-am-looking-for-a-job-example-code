@@ -1,3 +1,5 @@
+A c++ code required. to run on a chip of kinnect camera. to check validity of input matricies.
+
 ```text
 
 a matix like this:
@@ -34,3 +36,4 @@ not good:
 (bad - has seperate islands of same number)
 
 ```
+
