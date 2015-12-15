@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    
+      <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.2.0/respond.js"></script>
+      <![endif]-->
+
+</head>
+<body>
+    <div class="container">
+        <div style="margin:10px;">
+
+            <div class="jumbotron">
+                <h1>Your List</h1>
+                <p class="lead">
+
+                    <h3>A List you can have saved in your browser</h3>
+                    <ul>
+                        <li>Implementation using React.js as the UI layer</li>
+                    </ul>
+
+                </p>
+            </div>
+
+            <div id="rect_home">
+            
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- babel jsx transformer -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+
+<!-- reactjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.min.js"></script>
+
+<!-- Jquery ref (can replace with any other version if required)-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<!-- local storage -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localStorage/2.0.1/localStorage.min.js?https://cdnjs.cloudflare.com/ajax/libs/localStorage/2.0.1/localStorage.swf"></script>
+
+<script type="text/babel">
+
+
+
+
+// a row in the table component:
+// when its checkbox is changed it does a callback: this.props.onUpdate(id,object_of_changes);
+// 
+// onclick near checkbox it like clicks the checkbox
+// onclick on the row( not near checkbox ) it selects the row
+
+var TableRow = React.createClass({
+
+    getInitialState() {
+        return {
+            checked: this.props.row.checked
+        };
+    },
+
+    componentWillReceiveProps(newprops) {
+        if ('row' in newprops && 'checked' in newprops.row)
+            this.setState({
+                checked: newprops.row.checked
+            });
+    },
+
+    handleChange(event) { // the checkbox is checked
+        this.setState({
+            checked: event.target.checked
+        })
+        this.props.onUpdate(this.props.row.id, {
+            checked: event.target.checked
+        })
+    },
+
+    handleClick() { // near checkbox is clicked
+        var value = !this.state.checked;
+        this.setState({
+            checked: value
+        })
+        this.props.onUpdate(this.props.row.id, {
+            checked: value
+        })
+    },
+
+    handleClickOne() { // a row is clicked
+        if ( this.props.checkedCount==1 && this.state.checked ) return this.handleClick();// if a singe row is checked, and i am checked, so i am the only one that checked, then let uncheck itself.
+        
+        if (this.props.uncheckAll) this.props.uncheckAll();
+        var value = true;
+        this.setState({
+            checked: value
+        })
+        this.props.onUpdate(this.props.row.id, {
+            checked: value
+        })
+    },
+
+    render() {
+        return (
+        <tr>
+            <td onClick={this.handleClick}><input type="checkbox" checked={this.state.checked}  onChange={this.handleChange} /></td>
+            <td style={{cursor:'default'}} onClick={this.handleClickOne}>{this.props.row.firstname}</td>
+            <td style={{cursor:'default'}} onClick={this.handleClickOne}>{this.props.row.lastname}</td>
+            <td style={{cursor:'default'}} onClick={this.handleClickOne}>{this.props.row.email}</td>
+            <td style={{cursor:'default'}} onClick={this.handleClickOne}>{this.props.row.age}</td>
+        </tr>
+        )
+    }
+});
+
+
+
+
+
+
+
+// a component for top button:
+var ActionsButton = React.createClass({
+    render() {
+        return (
+            <div className="dropdown">
+                <button className="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                    Actions
+                    <span className="caret"></span>
+                </button>
+                <ul className="dropdown-menu">
+                    <li><a href="#" className="btn btn-large"  onClick={this.props.onAddClick} >Add New</a></li>
+                    <li><a href="#" className={ this.props.checkedCount==1 ? 'btn btn-large': 'btn btn-large disabled' }   onClick={this.props.onEditClick}>Edit</a></li>
+                    <li><a href="#" className={ this.props.checkedCount>0 ? 'btn btn-large': 'btn btn-large disabled' }   onClick={this.props.onDeleteClick} >Delete</a></li>
+                </ul>
+            </div>
+        )
+    }
+});
+
+
+
+// helper component
+// can show bootstrap's modal dialog
+// has methods: open,close
+// has events: handleCancel,handleSave
+// has properties: saveButton - for the main button text
+//                 title for the dialog title
+
+var BootstrapModal = React.createClass({
+
+    componentDidMount() {
+        $(this.refs.root).modal({
+            backdrop: 'static',
+            keyboard: false,
+            show: false
+        }); // When the component is added, turn it into a modal
+    },
+    componentWillUnmount() {
+        $(this.refs.root).off('hidden', this.handleHidden);
+    },
+
+    close() {
+        $(this.refs.root).modal('hide');
+    },
+    open() {
+        $(this.refs.root).modal('show');
+    },
+
+    handleCancel: function() {
+        if (this.props.onCancel)
+            this.props.onCancel();
+    },
+    handleSave: function() {
+        if (this.props.onSave)
+            this.props.onSave();
+    },
+    render: function() {
+        return (
+            <div className="modal fade" ref="root">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" onClick={this.handleCancel} > &times; </button>
+              <h4 className="modal-title">{this.props.title}</h4>
+            </div>
+            <div className="modal-body">
+              {this.props.children}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" onClick={this.handleCancel} >Close</button>
+              <button type="button" className="btn btn-primary" onClick={this.handleSave}>{this.props.saveButton}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+        );
+    }
+});
+
+
+
+// a form in a modal dialog, same form is used for add and edit
+//
+// objRow is an object like: { firstname: "", lastname: "", email: "", age: "" }
+//
+// it has methods: add()               - calling it shows an input dialog with empty values
+//                 edit( id, objRow )  - calling it shows an input dialog with filled values by values in the 
+//
+// it events:  onAdd(objRow) - it is called after successful adding
+//             onUpdate(id,objRow) - it is called after successful edit save
+//
+// form validation is in isValid method
+//
+
+var ModalForm = React.createClass({
+
+    getInitialState() {
+        return {
+            action: "add",
+            form: { firstname: "", lastname: "", email: "", age: "" },
+            error: { firstname: "", lastname: "", email: "", age: "" }
+        }
+    },
+
+    add() {
+        this.setState({
+            action: "add",
+            form: { firstname: "", lastname: "", email: "", age: "" }
+        })
+        this.isValid();
+        this.openModal();
+    },
+
+    edit(id, form) {
+        this.setState({
+            action: "edit",
+            id,
+            form
+        })
+        this.isValid(form);
+        this.openModal();
+    },
+
+    openModal() {
+        this.refs.modal.open();
+    },
+    closeModal() {
+        this.refs.modal.close();
+    },
+
+    isValid(form) {
+
+        var haserror = "";
+        if (!form) form = this.state.form;
+        this.state.error = { firstname: "", lastname: "", email: "", age: "" }
+
+        if (form.firstname.length == 0) this.state.error.firstname = haserror = "required";
+        if (form.lastname.length == 0) this.state.error.lastname = haserror = "required";
+        
+        if (form.email.length == 0) this.state.error.email = haserror = "required";
+        else if (!form.email.match(/^[^@\s]+@[^@\s]+$/)) this.state.error.age = haserror = "email should be valid";
+        
+        if (form.age.length == 0) this.state.error.age = haserror = "required";
+        else if (!form.age.match(/^[1-9][0-9]*\.?[0-9]*$/)) this.state.error.age = haserror = "age must be a number";
+        else if (parseFloat(form.age) > 200) this.state.error.age = haserror = "this age to old, it doesn't looks like and age";
+
+        return !haserror;
+    },
+
+    onsubmit() {
+        if (!this.isValid()) return false;
+        if (this.state.action == 'edit')
+            this.props.onUpdate(this.state.id, this.state.form);
+        else
+            this.props.onAdd(this.state.form);
+        this.closeModal();
+        return false;
+    },
+
+    oncancel(event) {
+        //console.log("canceled",this.state.form);
+        this.setState({
+            action: "add",
+            form: { firstname: "", lastname: "", email: "", age: "" }
+        })
+        this.closeModal();
+    },
+
+    firstnameChange: function(event) {
+        this.state.form.firstname = event.target.value;
+        this.setState(this.state);
+        this.isValid();
+    },
+    lastnameChange: function(event) {
+        this.state.form.lastname = event.target.value;
+        this.setState(this.state);
+        this.isValid();
+    },
+    emailChange: function(event) {
+        this.state.form.email = event.target.value;
+        this.setState(this.state);
+        this.isValid();
+    },
+    ageChange: function(event) {
+        this.state.form.age = event.target.value;
+        this.setState(this.state);
+        this.isValid();
+    },
+
+    render() {
+        return (
+            <BootstrapModal ref="modal" title={this.state.action=='add'?"Add new":"Edit"} onCancel={this.oncancel} 
+                                         onSave={this.onsubmit} saveButton={this.state.action=='add'?"Add":"Save"}  >
+                <form role="form" onSubmit={this.onsubmit} >
+                    <div className="form-group">
+                        <label htmlFor="firstname">Firstname:</label>
+                        <input type="text" value={this.state.form.firstname} className={this.state.error.firstname?'has-error form-control':'form-control'} onChange={this.firstnameChange} id="firstname" />
+                        <div className="help-block with-errors">{this.state.error.firstname}</div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="lastname">Lastname:</label>
+                        <input type="text" value={this.state.form.lastname} className={this.state.error.lastname?'has-error form-control':'form-control'} onChange={this.lastnameChange} id="lastname" />
+                        <div className="help-block with-errors">{this.state.error.lastname}</div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="email">Email address:</label>
+                        <input type="email" value={this.state.form.email} className={this.state.error.email?'has-error form-control':'form-control'} onChange={this.emailChange} id="email" />
+                        <div className="help-block with-errors">{this.state.error.email}</div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="age">Age:</label>
+                        <input type="text" value={this.state.form.age} className={this.state.error.age?'has-error form-control':'form-control'} onChange={this.ageChange} id="age" />
+                        <div className="help-block with-errors">{this.state.error.age}</div>
+                    </div>
+                </form>
+            </BootstrapModal>
+        )
+    }
+});
+
+
+// the full table component, basically it is the main screen
+//
+// it has callbacks onUpdate={onUpdate} onDelete={onDelete} onAdd={onAdd}
+//  in property rows={rows} it recives an array of objects like:
+//
+//  rows=[row,row...]
+//
+//  row={
+//      checked: false,
+//      id: 1,
+//      firstname: "",
+//      lastname: "",
+//      email: "",
+//      age: ""
+//  }
+//
+//
+//
+// at top there is an ActionsButton component 
+//   it received checkedCount to decide which buttons to enable/disable 
+//   it can call internal methods to  activate add or edit or delete: onDeleteClick={this.ondelete} onAddClick={this.add} onEditClick={this.edit}
+//
+// at the bottom there is amodal form that received internal callbacks that do staff on after edit and on after update
+//
+// in react  ref="modalform" is like giving an id to an element
+//
+// there are internal tool methods
+//
+
+var Table = React.createClass({
+    getInitialState() {
+    
+        var checkedcount = this.props.rows.reduce(function (shared, item) {
+            return shared + (item.checked ? 1 : 0)
+        }, 0);
+        
+        return {
+            checkedcount,
+            checked: checkedcount == this.props.rows.length, // auto check "check all" if all checkboxes of rows are selected
+            rows: this.props.rows
+        }; // checked(checkedcount):  default=false,0=false, full=true
+    },
+
+    componentWillReceiveProps(newprops) { //allow update of state
+        var newstate = {}
+        if ('rows' in newprops) newstate.rows = newprops.rows
+        if ('checked' in newprops) newstate.checked = newprops.checked
+        if (Object.keys(newstate).length) this.setState(newstate);
+    },
+
+    checkAll(event) { // handle "check all" top checkbox click
+        var value = event.target.checked
+        var onUpdate = this.props.onUpdate;
+        
+        this.state.rows.map(function (row) {
+            if (row.checked == value) return;
+            row.checked = value;
+            onUpdate(row.id, {
+                checked: value
+            });
+            return row
+        })
+        
+        var checkedcount = this.state.rows.reduce(function (shared, item) {
+            return shared + (item.checked ? 1 : 0)
+        }, 0);
+        
+        this.setState({
+            checked: value,
+            checkedcount,
+            rows: this.state.rows
+        })
+    },
+    
+    uncheckAll() { // tool method, called by a TableRow component to uncheck others
+        var value = false;
+        var onUpdate = this.props.onUpdate;
+        
+        this.state.rows.map(function (row) {
+            if (row.checked == value) return;
+            row.checked = value;
+            onUpdate(row.id, {
+                checked: value
+            });
+            return row
+        })
+        
+        var checkedcount = this.state.rows.reduce(function (shared, item) {
+            return shared + (item.checked ? 1 : 0)
+        }, 0);
+        
+        this.setState({
+            checked: value,
+            checkedcount,
+            rows: this.state.rows
+        })
+    },
+    
+    handleClick() { // simulate checkbox click when clicking on the top row
+        var value = !this.state.checked;
+        var onUpdate = this.props.onUpdate;
+        
+        this.state.rows.map(function (row) {
+            if (row.checked == value) return;
+            row.checked = value;
+            onUpdate(row.id, {
+                checked: value
+            });
+            return row
+        })
+        
+        var checkedcount = this.state.rows.reduce(function (shared, item) {
+            return shared + (item.checked ? 1 : 0)
+        }, 0);
+        
+        this.setState({
+            checked: value,
+            checkedcount,
+            rows: this.state.rows
+        })
+    },
+
+    onupdate(id, change) { // update self state, then call update callback
+        var filtered = this.state.rows.filter(function (a) {
+            return a.id === id
+        })
+        if (filtered.length == 0) return;
+
+        var newstate = {};
+
+        var row = filtered[0] // reference to one row in rows
+        Object.keys(change).forEach(function (k) {
+            row[k] = change[k];
+        });
+        newstate.rows = this.state.rows; //update state with rows , that has a one modified row
+
+        if ('checked' in change) {
+            var checkedcount = this.state.rows.reduce(function (shared, item) {
+                return shared + (item.checked ? 1 : 0)
+            }, 0);
+            newstate.checkedcount = checkedcount;
+
+            if (checkedcount == 0)
+                newstate.checked = false;
+            else if (checkedcount == this.state.rows.length)
+                newstate.checked = true;
+        }
+
+        if (this.props.onUpdate) this.props.onUpdate(id, change);
+        this.setState(newstate);
+    },
+    
+    ondelete() {    //called by delete button, calls onDelete(array_of_ids) callback 
+    
+        var ids = this.state.rows.filter(function (a) {
+            return a.checked
+        }).map(function (a) {
+            return a.id
+        });
+        this.props.onDelete(ids);
+        this.uncheckAll();
+        
+    },
+    
+    add() {   // internal method to show modal add form, called by add button
+        this.refs.modalform.add();
+    },
+    
+    edit() {  // internal method to show modal edit form with data, called by edit button
+    
+        //this:
+        
+        //var id=this.state.rows.filter(function(a){return a.checked}).map(function(a){return a.id})[0];
+        //var row=this.props.getRowForEditing(id)
+        
+        // or this:
+        
+        var row = this.state.rows.filter(function (a) {
+            return a.checked
+        })[0]
+        
+        
+        this.refs.modalform.edit(row.id, row);
+    },
+    
+    render() {
+        return (
+            <div>
+                <ActionsButton checkedCount={this.state.checkedcount} onDeleteClick={this.ondelete} onAddClick={this.add} onEditClick={this.edit}/>
+                <table className="table table-hover">
+                    <thead>
+                        <tr>
+                            <th onClick={this.handleClick}><input type="checkbox" checked={this.state.checked} onChange={this.checkAll} /></th>
+                            <th style={{cursor:'default'}} onClick={this.handleClick}>Firstname</th>
+                            <th style={{cursor:'default'}} onClick={this.handleClick}>Lastname</th>
+                            <th style={{cursor:'default'}} onClick={this.handleClick}>Email</th>
+                            <th style={{cursor:'default'}} onClick={this.handleClick}>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.rows.map(function(row,k,props) {
+                                return (
+                                <TableRow key={row.id} row={row} checkedCount={this.state.checkedcount} onUpdate={this.onupdate} uncheckAll={this.uncheckAll}/>
+                                )
+                            }.bind(this))
+                        }
+                    </tbody>
+                </table>
+                <ModalForm onAdd={this.props.onAdd} onUpdate={this.onupdate} ref="modalform" />
+            </div>
+        )
+    }
+});
+
+
+//data
+
+
+var rows = [];
+
+var initialrows= [
+    {id: 1, checked:true, firstname: "John", lastname: "Doe", email: "john@example.com", age: 17 },
+    {id: 2, checked:false, firstname: "Mary", lastname: "Moe", email: "mary@example.com", age: 32 },
+    {id: 3, checked:false, firstname: "July", lastname: "Dooley", email: "july@example.com", age: 14 }
+];
+window.rows=rows
+
+
+
+
+
+
+
+
+// local storage
+
+
+var defer_save_rowstimer = false
+
+function defer_save_rows() {
+    if (defer_save_rowstimer) clearTimeout(defer_save_rowstimer);
+    defer_save_rowstimer = setTimeout(save_rows, 50);
+}
+
+function save_rows() {
+    window.localStorage.setItem("rows", JSON.stringify(rows));
+}
+
+function load_rows() {
+    var data_rows = undefined;
+    try {
+        data_rows = JSON.parse(window.localStorage.getItem("rows"));
+    } catch (e) {
+        data_rows = undefined;
+    }
+
+    if (data_rows === false || data_rows === undefined || data_rows === null)
+        data_rows = initialrows; //data_rows=[];
+    rows = data_rows;
+}
+
+function localStore_ready() {
+    load_rows();
+    render();
+};
+
+if (window.localStorage.isLoaded) { // then polyfill
+    window.localStorage.isLoaded(localStore_ready);
+} else { //use native
+    localStore_ready.call(this);
+}
+
+
+
+
+
+
+
+// minimal glue between data and gui
+
+//update row
+function onUpdate(id, change) {
+    rows.
+    filter(function (a) {
+        return a.id === id
+    }).
+    forEach(function (a) {
+        Object.keys(change).forEach(function (k) {
+            a[k] = change[k];
+        });
+    });
+    defer_save_rows();
+}
+
+//delete row
+function onDelete(ids) {
+    if (ids instanceof Array) {
+        ids.forEach(function (id) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row.id === id) {
+                    rows.splice(i, 1);
+                    break;
+                }
+            }
+        })
+    }
+    defer_save_rows();
+    render();
+}
+
+
+//add row, just push the row
+var serialid = 0;
+function onAdd(obj) {
+
+    //generate id
+    
+    var id = (new Date().getTime().toString()) + '-' + Math.random(0, 1000).toString() + '-' + (serialid++);
+    
+    rows.push({
+        id,
+        checked: false,
+        firstname: obj.firstname,
+        lastname: obj.lastname,
+        email: obj.email,
+        age: obj.age
+    });
+    
+    defer_save_rows();
+    render();
+}
+//onAdd({firstname:"Shimon",lastname:"Doodkin",email:"helpmepro1@gmail.com",age:31})
+
+
+
+
+
+// make it work: the render function
+
+
+function render() {
+    ReactDOM.render(<Table onUpdate={onUpdate} onDelete={onDelete} onAdd={onAdd} rows={rows} />, document.getElementById('rect_home'));
+}
+window.render = render
+
+</script>
+
+</body>
+</html>
