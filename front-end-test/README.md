@@ -1,9 +1,10 @@
 
+
 input file : https://rawgit.com/shimondoodkin/i-am-looking-for-a-job-example-code/master/front-end-test/Customers.html
 
 result: https://rawgit.com/shimondoodkin/i-am-looking-for-a-job-example-code/master/front-end-test/reactjs-user-s-list.html
 
-
+i never knew react.  i have learned it very quickly. i have made a fully working solution.
 
 ----------------
 
