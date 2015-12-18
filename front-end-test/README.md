@@ -100,7 +100,8 @@ P.S. Please ACK to make sure you've received this email.
 ----------------
 
 
-I think there ware I did a very job on this example,
+I think I did a very good job on this example,
+
 The man that evaluated my work was expecting angular.js. 
 
 My comments:
