@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <!-- Jquery ref (can replace with any other version if required)-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div style="margin:10px;">
+
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                    Actions
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="btn btn-large" data-toggle="modal" data-target="#myModal">Add New</a></li>
+                    <li><a href="#" class="btn btn-large" data-toggle="modal" data-target="#myModal">Edit</a></li>
+                    <li><a href="#" class="btn btn-large disabled">Delete</a></li>
+                </ul>
+            </div>
+
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" /></th>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>Email</th>
+                            <th>Age</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>John</td>
+                            <td>Doe</td>
+                            <td>john@example.com</td>
+                            <td>17</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>Mary</td>
+                            <td>Moe</td>
+                            <td>mary@example.com</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>July</td>
+                            <td>Dooley</td>
+                            <td>july@example.com</td>
+                            <td>14</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <!-- Modal for add new / edit -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add new / Edit</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form">
+                                <!-- The actual form content-->
+                                <div class="form-group">
+                                    <label for="pwd">Firstname:</label>
+                                    <input type="text" class="form-control" id="firstname">
+                                </div>
+                                <div class="form-group">
+                                    <label for="firstname">Lastname:</label>
+                                    <input type="text" class="form-control" id="firstname">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email address:</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Age:</label>
+                                    <input type="text" class="form-control" id="age">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add / Save</button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+            <!-- Instructions -->
+            <div class="jumbotron">
+                <h1>JavaScript (User's List) exercise</h1>
+                <p class="lead">
+
+                    <h3>The Required Functionality</h3>
+
+                    <ul>
+                        <li>
+                            The action buttons provides the following functionality:
+                            <ul>
+                                <li>Adding a new user</li>
+                                <li>Editing an existing selected user (enabled only if one row is selected. Otherwise button should be disabled)</li>
+                                <li>Deleting all selected users (if no user is selected - button should be disabled)</li>
+                            </ul>
+                        </li>
+                        <li>The check-box on the header row - selects all rows</li>
+                        <li>The application validates the user's input is correct (all fields are required, age must be a number)</li>
+                        <li>The list of users is saved in the local browser</li>
+                    </ul>
+
+
+                    <h3>Implementation details</h3>
+
+                    <ul>
+                        <li>You may use the internet as a resource, but we trust you to do this exercise <span style="font-weight:bold;">without outside help</span>!</li>
+                        <li>You are welcome to use any popular familiar JS frameworks to implement the functionality of this page.</li>                        
+                        <li>Have the user be represented by a Model / ViewModel / WhatEver (the specific framework semantics is less relevant)</li>
+                        <li>Make sure your code is organized, fully documented & keep it simple as much as possible.</li>
+                        <li>Persist the users data on the local user machine using cookies. (so when the page is refreshed the last list of users I created will be displayed)</li>
+                        <li>We used here Bootstrap and JQuery to structure the page, but you may modify the html as much as you need - the functionality should stay the same</li>
+                    </ul>
+
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
